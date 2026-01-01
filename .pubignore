@@ -1,0 +1,8 @@
+# .pubignore
+# This file tells pub.dev what NOT to include when publishing.
+# By default, pub respects .gitignore, but we need to override
+# to include the extension/devtools/build/ directory.
+
+# We want to include extension/devtools/build/ in the published package
+# even though it's gitignored, so we use the ! prefix to negate the ignore.
+!extension/devtools/build/

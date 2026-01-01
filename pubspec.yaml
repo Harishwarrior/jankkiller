@@ -1,0 +1,18 @@
+name: jankkiller
+description: A Flutter DevTools extension for context-aware screen-flow performance profiling and regression analysis.
+version: 0.0.1
+homepage: https://github.com/user/mytroll_metrics
+
+environment:
+  sdk: ^3.0.0
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
