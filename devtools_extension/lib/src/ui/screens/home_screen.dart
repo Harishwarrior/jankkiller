@@ -9,7 +9,7 @@ import 'comparison_view.dart';
 import 'session_detail_view.dart';
 import 'session_list_view.dart';
 
-/// Main home screen for the mytroll_metrics DevTools extension.
+/// Main home screen for the jankkiller DevTools extension.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -198,45 +198,18 @@ class _HomeScreenState extends State<HomeScreen> {
           const VerticalDivider(width: 1),
           // Session Detail Panel
           Expanded(
-            child: ListenableBuilder(
-              listenable: _sessionManager,
-              builder: (context, child) {
-                if (_selectedSessionId == null) {
-                  return const Center(
+            child: _selectedSessionId == null
+                ? const Center(
                     child: Text(
                       'Select a session to view details',
                       style: TextStyle(color: Colors.grey),
                     ),
-                  );
-                }
-
-                // Find the current session from the manager by ID
-                final currentSession = _sessionManager.sessions
-                    .where((s) => s.sessionId == _selectedSessionId)
-                    .firstOrNull;
-
-                // If session not found, clear selection and show empty state
-                if (currentSession == null) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (mounted) {
-                      setState(() => _selectedSessionId = null);
-                    }
-                  });
-                  return const Center(
-                    child: Text(
-                      'Session no longer available',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  );
-                }
-
-                // Rebuild detail view with latest session data
-                return SessionDetailView(
-                  session: currentSession,
-                  sessionManager: _sessionManager,
-                );
-              },
-            ),
+                  )
+                : SessionDetailView(
+                    key: ValueKey(_selectedSessionId),
+                    sessionId: _selectedSessionId!,
+                    sessionManager: _sessionManager,
+                  ),
           ),
         ],
       ),

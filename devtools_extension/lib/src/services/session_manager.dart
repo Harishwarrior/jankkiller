@@ -82,8 +82,22 @@ class SessionManager extends ChangeNotifier {
 
   /// Handle screen start event.
   void _handleScreenStart(Map<String, dynamic> data) {
+    final sessionId = data['sessionId'] as String;
+
+    // Check if a session with this ID already exists to prevent duplicates
+    final existingSessionIndex = _sessions.indexWhere(
+      (s) => s.sessionId == sessionId,
+    );
+
+    if (existingSessionIndex != -1) {
+      // Session already exists, just update active session reference
+      _activeSession = _sessions[existingSessionIndex];
+      notifyListeners();
+      return;
+    }
+
     final session = ScreenSessionModel(
-      sessionId: data['sessionId'] as String,
+      sessionId: sessionId,
       routeName: data['route'] as String,
       startTimeMicros: data['timestamp'] as int,
       isPopup: data['isPopup'] as bool? ?? false,

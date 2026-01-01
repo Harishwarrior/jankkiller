@@ -6,82 +6,101 @@ import '../widgets/frame_chart.dart';
 import '../widgets/insights_panel.dart';
 
 /// Detail view for a selected screen session.
-class SessionDetailView extends StatelessWidget {
-  final ScreenSessionModel session;
+class SessionDetailView extends StatefulWidget {
+  final String sessionId;
   final SessionManager sessionManager;
 
   const SessionDetailView({
     super.key,
-    required this.session,
+    required this.sessionId,
     required this.sessionManager,
   });
 
   @override
+  State<SessionDetailView> createState() => _SessionDetailViewState();
+}
+
+class _SessionDetailViewState extends State<SessionDetailView> {
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Create a unique key for the entire detail view based on session ID
-    // This ensures the view rebuilds when switching between sessions
-    return KeyedSubtree(
-      key: ValueKey('detail_${session.sessionId}'),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with route name and status
-            _buildHeader(context, theme),
-            const SizedBox(height: 24),
+    return ListenableBuilder(
+      listenable: widget.sessionManager,
+      builder: (context, _) {
+        // Always get the latest session data from the manager
+        final session = widget.sessionManager.sessions
+            .where((s) => s.sessionId == widget.sessionId)
+            .firstOrNull;
 
-            // Summary cards
-            _buildSummaryCards(context, theme),
-            const SizedBox(height: 24),
-
-            // Frame timing chart
-            Text(
-              'Frame Timing',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+        if (session == null) {
+          return const Center(
+            child: Text(
+              'Session no longer available',
+              style: TextStyle(color: Colors.grey),
             ),
-            const SizedBox(height: 12),
-            RepaintBoundary(
-              child: SizedBox(
-                height: 250,
-                child: FrameChart(session: session),
-              ),
-            ),
-            const SizedBox(height: 24),
+          );
+        }
 
-            // Insights panel
-            if (session.insights.isNotEmpty) ...[
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with route name and status
+              _buildHeader(context, theme, session),
+              const SizedBox(height: 24),
+
+              // Summary cards
+              _buildSummaryCards(context, theme, session),
+              const SizedBox(height: 24),
+
+              // Frame timing chart
               Text(
-                'Performance Insights',
+                'Frame Timing',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 12),
-              InsightsPanel(insights: session.insights),
-              const SizedBox(height: 24),
-            ],
-
-            // Frame details table
-            Text(
-              'Frame Details',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+              RepaintBoundary(
+                child: SizedBox(
+                  height: 250,
+                  child: FrameChart(session: session),
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            _buildFrameTable(context, theme),
-          ],
-        ),
-      ),
+              const SizedBox(height: 24),
+
+              // Insights panel
+              if (session.insights.isNotEmpty) ...[
+                Text(
+                  'Performance Insights',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                InsightsPanel(insights: session.insights),
+                const SizedBox(height: 24),
+              ],
+
+              // Frame details table
+              Text(
+                'Frame Details',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              _buildFrameTable(context, theme, session),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildHeader(BuildContext context, ThemeData theme) {
+  Widget _buildHeader(BuildContext context, ThemeData theme, ScreenSessionModel session) {
     return Row(
       children: [
         Expanded(
@@ -119,7 +138,7 @@ class SessionDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCards(BuildContext context, ThemeData theme) {
+  Widget _buildSummaryCards(BuildContext context, ThemeData theme, ScreenSessionModel session) {
     final jankPercentage = session.jankPercentage;
     Color healthColor;
     String healthLabel;
@@ -187,7 +206,7 @@ class SessionDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildFrameTable(BuildContext context, ThemeData theme) {
+  Widget _buildFrameTable(BuildContext context, ThemeData theme, ScreenSessionModel session) {
     if (session.frameMetrics.isEmpty) {
       return const Card(
         child: Padding(
