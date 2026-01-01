@@ -329,7 +329,7 @@ Individual frame timing data.
 
 ```bash
 # Clone the repository
-git clone https://github.com/user/jankkiller.git
+git clone https://github.com/Harishwarrior/jankkiller.git
 cd jankkiller
 
 # Use FVM (optional)
@@ -467,9 +467,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-- [Issue Tracker](https://github.com/user/jankkiller/issues)
-- [Documentation](https://github.com/user/jankkiller)
-- [Example App](https://github.com/user/jankkiller/tree/main/example)
+- [Issue Tracker](https://github.com/Harishwarrior/jankkiller/issues)
+- [Documentation](https://github.com/Harishwarrior/jankkiller)
+- [Example App](https://github.com/Harishwarrior/jankkiller/tree/main/example)
 
 ---
 

@@ -179,7 +179,7 @@ This allows the extension to correlate user-level navigation with low-level prof
 The extension is configured via `extension/devtools/config.yaml` with the following required fields:
 
 - **name**: jankkiller - Package name, appears in the extension title bar
-- **issueTracker**: <https://github.com/user/jankkiller/issues> - URL for bug reports
+- **issueTracker**: <https://github.com/Harishwarrior/jankkiller/issues> - URL for bug reports
 - **version**: 0.0.1 - Extension version for tracking updates
 - **materialIconCodePoint**: 0xe1b8 - Material icon for the DevTools tab
 - **requiresConnection**: true - Requires active Flutter app connection

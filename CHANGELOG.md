@@ -41,4 +41,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Detailed session view with charts and insights
 - Performance comparison across multiple sessions
 
-[0.0.1]: https://github.com/user/jankkiller/releases/tag/v0.0.1
+[0.0.1]: https://github.com/Harishwarrior/jankkiller/releases/tag/v0.0.1
