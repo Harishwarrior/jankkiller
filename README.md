@@ -1,5 +1,7 @@
 # JankKiller
 
+> ⚠️ **Experimental** - This package is in early development. APIs may change and some features are incomplete.
+
 A Flutter DevTools extension for context-aware screen-flow performance profiling and regression analysis.
 
 ## Overview
