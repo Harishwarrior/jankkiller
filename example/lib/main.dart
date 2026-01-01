@@ -16,18 +16,12 @@ class ExampleApp extends StatefulWidget {
 class _ExampleAppState extends State<ExampleApp> {
   final JankKillerController _metricsController = JankKillerController(
     onSessionStart: (session) {
-      debugPrint('[Mytroll] Session started: ${session.routeName}');
+      debugPrint('[JankKiller] Session started: ${session.routeName}');
     },
     onSessionEnd: (session) {
-      debugPrint('[Mytroll] Session ended: ${session.routeName} - '
+      debugPrint('[JankKiller] Session ended: ${session.routeName} - '
           '${session.frameMetrics.length} frames, '
           '${session.durationMs?.toStringAsFixed(0)}ms');
-    },
-    onFrameMetric: (metric) {
-      if (metric.isJanky) {
-        debugPrint('[Mytroll] Janky frame #${metric.frameNumber}: '
-            '${metric.totalDurationMs.toStringAsFixed(2)}ms');
-      }
     },
   );
 

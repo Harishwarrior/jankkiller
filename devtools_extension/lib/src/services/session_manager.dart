@@ -15,6 +15,11 @@ class SessionManager extends ChangeNotifier {
   StreamSubscription<Event>? _extensionSubscription;
   bool _isInitialized = false;
 
+  /// Throttle timer to limit notifyListeners calls during frame batches.
+  Timer? _notifyThrottleTimer;
+  bool _pendingNotification = false;
+  static const _throttleDuration = Duration(milliseconds: 100);
+
   /// All captured sessions (completed + active).
   List<ScreenSessionModel> get sessions => List.unmodifiable(_sessions);
 
@@ -160,7 +165,7 @@ class SessionManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Handle frame batch event.
+  /// Handle frame batch event with throttled notifications.
   void _handleFrameBatch(Map<String, dynamic> data) {
     final frames = data['frames'] as List?;
     if (frames == null || _activeSession == null) return;
@@ -171,7 +176,23 @@ class SessionManager extends ChangeNotifier {
       _activeSession!.addFrameMetric(metric);
     }
 
+    // Use throttled notification to avoid excessive UI rebuilds
+    _scheduleNotification();
+  }
+
+  /// Schedules a throttled notification to avoid excessive UI rebuilds.
+  void _scheduleNotification() {
+    if (_notifyThrottleTimer?.isActive == true) {
+      _pendingNotification = true;
+      return;
+    }
     notifyListeners();
+    _notifyThrottleTimer = Timer(_throttleDuration, () {
+      if (_pendingNotification) {
+        _pendingNotification = false;
+        notifyListeners();
+      }
+    });
   }
 
   /// Refresh session data (re-request from client).
@@ -216,6 +237,7 @@ class SessionManager extends ChangeNotifier {
 
   @override
   void dispose() {
+    _notifyThrottleTimer?.cancel();
     _extensionSubscription?.cancel();
     super.dispose();
   }
