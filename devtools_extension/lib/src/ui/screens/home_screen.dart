@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'dart:html' as html;
+import 'dart:js_interop';
+
+import 'package:web/web.dart' as web;
 
 import 'package:flutter/material.dart';
 
@@ -240,14 +242,21 @@ class _HomeScreenState extends State<HomeScreen> {
       final data = _sessionManager.exportSessions();
       final jsonString = jsonEncode(data);
 
-      // Use web-specific download logic
-      final blob = html.Blob([jsonString], 'application/json');
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      html.AnchorElement(href: url)
-        ..setAttribute('download',
-            'mytroll_profile_${DateTime.now().millisecondsSinceEpoch}.json')
-        ..click();
-      html.Url.revokeObjectUrl(url);
+      // Use web-specific download logic with package:web (WASM compatible)
+      final bytes = jsonString.codeUnits;
+      final jsArray = bytes.map((b) => b.toJS).toList();
+      final uint8Array = jsArray.toJS;
+      final blob = web.Blob(
+        [uint8Array].toJS,
+        web.BlobPropertyBag(type: 'application/json'),
+      );
+      final url = web.URL.createObjectURL(blob);
+      final anchor = web.document.createElement('a') as web.HTMLAnchorElement
+        ..href = url
+        ..download =
+            'jankkiller_profile_${DateTime.now().millisecondsSinceEpoch}.json';
+      anchor.click();
+      web.URL.revokeObjectURL(url);
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -262,18 +271,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _importBaseline() {
-    final uploadInput = html.FileUploadInputElement()..accept = '.json';
+    final uploadInput =
+        web.document.createElement('input') as web.HTMLInputElement
+          ..type = 'file'
+          ..accept = '.json';
     uploadInput.click();
 
     uploadInput.onChange.listen((e) {
       final files = uploadInput.files;
-      if (files == null || files.isEmpty) return;
+      if (files == null || files.length == 0) return;
 
-      final reader = html.FileReader();
-      reader.readAsText(files[0]);
+      final reader = web.FileReader();
+      reader.readAsText(files.item(0)!);
       reader.onLoadEnd.listen((e) {
         try {
-          final content = reader.result as String;
+          // WASM compatible: convert JSAny result to Dart String
+          final jsResult = reader.result;
+          if (jsResult == null) return;
+          final content = (jsResult as JSString).toDart;
           final Map<String, dynamic> data = jsonDecode(content);
           final sessions = _sessionManager.importSessions(data);
 
