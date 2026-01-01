@@ -70,7 +70,7 @@ flutter analyze
 
 **Entry point**: `JankKillerController` - coordinates all instrumentation
 
-```
+```text
 JankKillerController
 ├── PerformanceNavigatorObserver (lib/src/observer/)
 │   ├── Listens to route lifecycle (didPush, didPop, didReplace, didRemove)
@@ -100,7 +100,7 @@ JankKillerController
 
 **Entry point**: `devtools_extension/lib/main.dart`
 
-```
+```text
 SessionManager (devtools_extension/lib/src/services/)
 ├── Connects to VM Service via devtools_extensions package
 ├── Listens to EventStreams.kExtension for 'jankkiller:*' events
@@ -179,7 +179,7 @@ This allows the extension to correlate user-level navigation with low-level prof
 The extension is configured via `extension/devtools/config.yaml` with the following required fields:
 
 - **name**: jankkiller - Package name, appears in the extension title bar
-- **issueTracker**: https://github.com/user/mytroll_metrics/issues - URL for bug reports
+- **issueTracker**: <https://github.com/user/mytroll_metrics/issues> - URL for bug reports
 - **version**: 0.0.1 - Extension version for tracking updates
 - **materialIconCodePoint**: 0xe1b8 - Material icon for the DevTools tab
 - **requiresConnection**: true - Requires active Flutter app connection
@@ -190,7 +190,7 @@ The extension is enabled in apps via `devtools_options.yaml` at the root.
 
 The DevTools extension follows the companion pattern:
 
-```
+```text
 jankkiller/
 ├── lib/                          # Core instrumentation library
 ├── devtools_extension/           # Extension source code (Flutter web app)
@@ -206,12 +206,14 @@ jankkiller/
 Before publishing to pub.dev:
 
 1. **Build the extension:**
+
    ```bash
    cd devtools_extension
    dart run devtools_extensions build_and_copy --source=. --dest=../extension/devtools
    ```
 
 2. **Validate the extension:**
+
    ```bash
    dart run devtools_extensions validate --package=.
    ```
@@ -222,6 +224,7 @@ Before publishing to pub.dev:
    - `.pubignore` ensures build directory is included despite .gitignore
 
 4. **Publish:**
+
    ```bash
    flutter pub publish --dry-run  # Preview what will be published
    flutter pub publish            # Publish to pub.dev
