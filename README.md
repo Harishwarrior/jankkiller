@@ -1,4 +1,5 @@
 # JankKiller
+<img width="2720" height="1568" alt="Gemini_Generated_Image_n5vo8hn5vo8hn5vo" src="https://github.com/user-attachments/assets/94e32c84-f556-4846-a191-71923810b510" />
 
 > ⚠️ **Experimental** - This package is in early development. APIs may change and some features are incomplete.
 
